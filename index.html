@@ -1,49 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      position: relative;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      color: white;
+      transition: top 1s;
+    }
+    .falling {
+      transition: top 1s, transform 1s;
+    }
+  </style>
+  <title>Falling Styled Button Duplicator</title>
 </head>
-    <style>
-        body {
-            font-family: 'Courier New', monospace;
-            background-color: #2d2d2d;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        #clock {
-            font-size: 3em;
-            color: #fff;
-            text-shadow: 2px 2px 2px #333;
-            border: 5px solid #444;
-            padding: 10px;
-            border-radius: 10px;
-            background-color: #1a1a1a;
-        }
-    </style>
 <body>
-    <div id="clock"></div>
+  <button id="centeredButton" onclick="duplicateButton()">Click me</button>
+  <button onclick="makeButtonsFall()">Spawn</button>
 
-    <script>
-        function updateClock() {
-            const now = new Date();
-            let hours = now.getHours() % 12 || 12; // Convert to 12-hour format
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
-            const amPm = now.getHours() >= 12 ? 'PM' : 'AM';
-            
-            hours = hours.toString().padStart(2, '0');
+  <script>
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
 
-            const clockDisplay = `${hours}:${minutes}:${seconds} ${amPm}`;
-            document.getElementById('clock').innerText = clockDisplay;
-        }
+    function getRandomTheme() {
+      const themes = ['primary', 'success', 'warning', 'danger', 'info'];
+      return themes[Math.floor(Math.random() * themes.length)];
+    }
 
-        setInterval(updateClock, 1000);
-        updateClock(); // Initial call to display the clock immediately
-    </script>
+    function duplicateButton() {
+      const originalButton = document.getElementById('centeredButton');
+      const newButton = originalButton.cloneNode(true);
+
+      // Randomly style the new button
+      const randomColor = getRandomColor();
+      const randomTheme = getRandomTheme();
+
+      newButton.style.backgroundColor = randomColor;
+      newButton.classList.add(randomTheme);
+
+      // Randomly position the new button
+      const randomX = Math.random() * window.innerWidth;
+      const randomY = Math.random() * window.innerHeight;
+      const randomAngle = Math.random() * 360;
+
+      newButton.style.left = `${randomX}px`;
+      newButton.style.top = `${randomY}px`;
+      newButton.style.transform = `translate(-50%, -50%) rotate(${randomAngle}deg)`;
+
+      document.body.appendChild(newButton);
+    }
+
+    function makeButtonsFall() {
+      const buttons = document.querySelectorAll('button:not(.falling)');
+      buttons.forEach(button => {
+        button.classList.add('falling');
+        button.style.top = `${window.innerHeight}px`;
+      });
+    }
+  </script>
 </body>
 </html>
